@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import path from "path";
@@ -8,15 +8,20 @@ class DwpApp {
     private static dwpApp: DwpApp;
     private app: express.Application;
     constructor() {
+        dotenv.config({ path: path.resolve(__dirname, `../config/config.env`) })
         this.app = express();
         this.instantiateMiddleware();
+
         this.instantiateServer();
-        dotenv.config({ path: path.resolve(__dirname, `../config/config.env`) })
+
 
     }
     public instantiateMiddleware() {
         this.app.use(helmet());
-        this.app.use(getRouterAndRoutes());
+        this.app.use("/api", getRouterAndRoutes());
+        this.app.get("/", (req: Request, res: Response) => {
+            res.status(200).send({ "message": "success" })
+        })
     }
     public instantiateServer() {
         this.app.listen(process.env.PORT, () => {
@@ -31,3 +36,4 @@ class DwpApp {
     }
 }
 
+const dwpApp = DwpApp.getSingletonApp();
