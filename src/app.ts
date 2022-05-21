@@ -11,7 +11,6 @@ class DwpApp {
         dotenv.config({ path: path.resolve(__dirname, `../config/config.env`) })
         this.app = express();
         this.instantiateMiddleware();
-
         this.instantiateServer();
 
 
