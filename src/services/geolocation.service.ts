@@ -2,15 +2,26 @@ import fetch from 'node-fetch';
 import { getDistance, convertDistance } from "geolib"
 
 export async function apiRequest(url: string) {
-    const response = await fetch(url);
-    const jsonResponse = response.json();
-    return jsonResponse;
+    try {
+        const response = await fetch(url);
+        const jsonResponse = response.json();
+        return jsonResponse;
+    }
+    catch (e: any) {
+        throw e;
+    }
 }
 
 export async function buildUrlAndSendRequest(url: string) {
-    const builtURL = new URL(url);
-    const fetchedResponse = await apiRequest(builtURL.href);
-    return fetchedResponse;
+    try {
+        const builtURL = new URL(url);
+        const fetchedResponse = await apiRequest(builtURL.href);
+        return fetchedResponse;
+    }
+    catch (e: any) {
+        throw e
+    }
+
 }
 
 export function appendDistanceToUsersGeneric(locLat: number, locLong: number, usersResponse: Array<any>) {
@@ -33,11 +44,17 @@ export function calculateDistanceGeneric(locationLat: number, locationLongitude:
 
 
 export async function getLocationLatLong(city: string) {
-    const search = `?address=${city}&key=${process.env.GOOG_APIKEY}`
-    const url = `${process.env.GOOG_GEOLOC_URL}${search}`
-    const response = await buildUrlAndSendRequest(url);
-    const latLong = response.results[0].geometry.location;
-    return latLong;
+    try {
+        const search = `?address=${city}&key=${process.env.GOOG_APIKEY}`
+        const url = `${process.env.GOOG_GEOLOC_URL}${search}`
+        const response = await buildUrlAndSendRequest(url);
+        const latLong = response.results[0].geometry.location;
+        return latLong;
+    }
+    catch (e: any) {
+        throw e;
+    }
+
 }
 
 export function amalgamateDistanceAndResidingArrays(usersListedInLondon: Array<any>, filteredByDistanceToLondon: Array<any>) {

@@ -2,13 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { apiRequest, buildUrlAndSendRequest, getLocationLatLong, appendDistanceToUsersGeneric, amalgamateDistanceAndResidingArrays } from "../services/geolocation.service"
 import { capitaliseFirstLetter } from "../utils/utilityFunctions"
 
-export async function getUsers(req: Request, res: Response) {
-    const pathname = '/users';
-    const geolocUrl = new URL(`${process.env.GEOLOC_URL}${pathname}`);
-    const response = await apiRequest(geolocUrl.href);
-    return res.status(200).send(response);
-}
-
 export async function getUsersWithinLocationGeneric(req: Request, res: Response) {
     try {
         let location = req.params.location;
