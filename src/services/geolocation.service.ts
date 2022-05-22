@@ -7,30 +7,37 @@ export async function apiRequest(url: string) {
     return jsonResponse;
 }
 
-export function calculateDistance(userLatitude: number, userLongitude: number) {
-    const londonLatitiude = 51.5072;
-    const londonLongitude = 0.1276;
-    return convertDistance(getDistance(
-        { latitude: londonLatitiude, longitude: londonLongitude },
-        { latitude: userLatitude, longitude: userLongitude }
-    ), "mi");
-}
-
 export async function buildUrlAndSendRequest(url: string) {
     const builtURL = new URL(url);
     const fetchedResponse = await apiRequest(builtURL.href);
     return fetchedResponse;
 }
 
-export function appendDistanceToUser(usersResponse: Array<any>) {
+export function appendDistanceToUsersGeneric(locLat: number, locLong: number, usersResponse: Array<any>) {
     let distanceArray = [];
     usersResponse.forEach(user => {
         const { latitude, longitude } = user;
-        const response = calculateDistance(latitude, longitude);
-        user["distanceFromLondonInMiles"] = response;
+        const response = calculateDistanceGeneric(locLat, locLong, latitude, longitude);
+        user["distanceFromLocationInMiles"] = response;
         distanceArray.push(user);
     });
     return distanceArray;
+}
+
+export function calculateDistanceGeneric(locationLat: number, locationLongitude: number, userLatitude: number, userLongitude: number) {
+    return convertDistance(getDistance(
+        { latitude: locationLat, longitude: locationLongitude },
+        { latitude: userLatitude, longitude: userLongitude }
+    ), "mi");
+}
+
+
+export async function getLocationLatLong(city: string) {
+    const search = `?address=${city}&key=${process.env.GOOG_APIKEY}`
+    const url = `${process.env.GOOG_GEOLOC_URL}${search}`
+    const response = await buildUrlAndSendRequest(url);
+    const latLong = response.results[0].geometry.location;
+    return latLong;
 }
 
 export function amalgamateDistanceAndResidingArrays(usersListedInLondon: Array<any>, filteredByDistanceToLondon: Array<any>) {
