@@ -1,8 +1,6 @@
-# Project Example
+# Dwp technical interview
 
-Project Data Encryption
-
-This application was built using Node v14.10.0.
+Dwp GeoLocation query API.
 
 ## In order to run:
 
